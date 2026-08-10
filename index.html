@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#15110d" />
+  <title>Pixel LomoLab v0.2 Camera Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="camera-body">
+      <header class="top-panel">
+        <div class="brand-block">
+          <span class="brand-kicker">PIXEL CAMERA LAB</span>
+          <h1>PIXEL <strong>LOMOLAB</strong></h1>
+          <span class="version">V0.2 / CAMERA TEST</span>
+        </div>
+
+        <div class="status-block">
+          <div class="status-led on" id="statusLed" aria-hidden="true"></div>
+          <div class="status-copy">
+            <small>STATUS</small>
+            <span id="statusText">READY</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="display-bezel">
+        <div class="display-toolbar">
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="modeLabBtn" type="button">LAB</button>
+            <button class="mode-btn" id="modeCamBtn" type="button">CAM</button>
+          </div>
+
+          <label class="utility-button" for="fileInput" id="openBtn">
+            <span class="utility-icon">↥</span>
+            OPEN
+          </label>
+
+          <button class="utility-button" id="flipCamBtn" type="button" disabled>
+            <span class="utility-icon">↻</span>
+            FLIP
+          </button>
+
+          <button class="utility-button" id="downloadBtn" type="button" disabled>
+            <span class="utility-icon">↓</span>
+            SAVE
+          </button>
+        </div>
+
+        <div class="screen-frame">
+          <div class="screen" id="dropZone">
+            <video id="cameraVideo" playsinline muted></video>
+            <canvas id="previewCanvas" aria-label="Pré-visualização da imagem processada"></canvas>
+
+            <div class="empty-state" id="emptyState">
+              <div class="empty-reticle">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <strong id="emptyTitle">NO FILM LOADED</strong>
+              <span id="emptyText">abra uma foto da galeria ou computador</span>
+              <label for="fileInput" class="primary-open" id="emptyOpen">OPEN IMAGE</label>
+              <button class="primary-open secondary" id="emptyCameraBtn" type="button">START CAMERA</button>
+              <small class="empty-note">Para câmera: use HTTPS no GitHub Pages ou localhost.</small>
+            </div>
+
+            <div class="screen-hud">
+              <div>
+                <small>MODE</small>
+                <strong id="hudMode">LAB</strong>
+              </div>
+              <div>
+                <small>PROFILE</small>
+                <strong id="hudPreset">CUSTOM</strong>
+              </div>
+              <div>
+                <small>COL</small>
+                <strong id="hudColors">08</strong>
+              </div>
+              <div>
+                <small>PIX</small>
+                <strong id="hudPixel">08</strong>
+              </div>
+            </div>
+
+            <div class="record-badge" id="recordBadge" hidden>
+              <span class="rec-dot"></span>
+              REC
+            </div>
+          </div>
+        </div>
+
+        <input id="fileInput" type="file" accept="image/*" hidden />
+      </section>
+
+      <section class="preset-strip" aria-label="Presets">
+        <button class="preset active" type="button" data-preset="custom">CUSTOM</button>
+        <button class="preset" type="button" data-preset="raw">RAW PIXEL</button>
+        <button class="preset" type="button" data-preset="mono">MONO LCD</button>
+        <button class="preset" type="button" data-preset="acid">ACID 04</button>
+        <button class="preset" type="button" data-preset="warm">WARM 8-BIT</button>
+        <button class="preset" type="button" data-preset="night">NIGHT</button>
+      </section>
+
+      <section class="control-deck">
+        <div class="control-row main-controls">
+          <div class="knob-module">
+            <div class="label">PIX</div>
+            <div class="knob-wrap">
+              <div class="knob" data-control="pixel" role="slider" aria-label="Tamanho do pixel" tabindex="0">
+                <div class="knob-marker"></div>
+              </div>
+            </div>
+            <div class="value" id="pixelValue">08</div>
+            <small>PIXEL SIZE</small>
+          </div>
+
+          <div class="knob-module">
+            <div class="label">COL</div>
+            <div class="knob-wrap">
+              <div class="knob" data-control="colors" role="slider" aria-label="Número de cores" tabindex="0">
+                <div class="knob-marker"></div>
+              </div>
+            </div>
+            <div class="value" id="colorsValue">08</div>
+            <small>COLORS</small>
+          </div>
+
+          <div class="knob-module">
+            <div class="label">DTH</div>
+            <div class="knob-wrap">
+              <div class="knob" data-control="dither" role="slider" aria-label="Dithering" tabindex="0">
+                <div class="knob-marker"></div>
+              </div>
+            </div>
+            <div class="value" id="ditherValue">35</div>
+            <small>DITHER</small>
+          </div>
+        </div>
+
+        <div class="divider"><span>LAB TRIM</span></div>
+
+        <div class="control-row trim-controls">
+          <div class="knob-module compact">
+            <div class="label">CTR</div>
+            <div class="knob-wrap">
+              <div class="knob small" data-control="contrast" role="slider" aria-label="Contraste" tabindex="0">
+                <div class="knob-marker"></div>
+              </div>
+            </div>
+            <div class="value" id="contrastValue">+10</div>
+            <small>CONTRAST</small>
+          </div>
+
+          <div class="knob-module compact">
+            <div class="label">SAT</div>
+            <div class="knob-wrap">
+              <div class="knob small" data-control="saturation" role="slider" aria-label="Saturação" tabindex="0">
+                <div class="knob-marker"></div>
+              </div>
+            </div>
+            <div class="value" id="saturationValue">+08</div>
+            <small>SATURATION</small>
+          </div>
+
+          <div class="switch-module">
+            <div class="label">LCD</div>
+            <button id="scanlineBtn" class="toggle-switch" type="button" aria-pressed="true">
+              <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </button>
+            <small>DISPLAY FX</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="action-bar">
+        <button class="action-small" id="resetBtn" type="button">RESET</button>
+
+        <div class="rec-cluster">
+          <div class="rec-indicator" id="recIndicator" aria-hidden="true"></div>
+          <button class="rec-switch" id="recBtn" type="button" aria-pressed="false" disabled>
+            <span class="rec-switch-track"><span class="rec-switch-knob"></span></span>
+            <span class="rec-copy">REC</span>
+          </button>
+        </div>
+
+        <button class="shutter-btn" id="shutterBtn" type="button" disabled aria-label="Disparar foto">
+          <span class="shutter-ring">
+            <span class="shutter-core"></span>
+          </span>
+        </button>
+      </section>
+
+      <footer class="footer-panel">
+        <span>PIXEL LOMOLAB</span>
+        <span>LOCAL PROCESSING / NO UPLOAD</span>
+        <span>V0.2</span>
+      </footer>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
